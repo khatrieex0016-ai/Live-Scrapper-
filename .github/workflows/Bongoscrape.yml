@@ -1,0 +1,31 @@
+name: Bongo Auto Scraper
+
+on:
+  
+
+  workflow_dispatch: # Actions ট্যাব থেকে ম্যানুয়ালি রান করার অপশন
+
+jobs:
+  scrape-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install JQ (JSON Processor)
+        run: sudo apt-get install jq -y
+
+      - name: Make Script Executable
+        run: chmod +x scraper.sh
+
+      - name: Run Scraper Script
+        run: ./scraper.sh
+
+      - name: Commit and Push Updated Data
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+          git add bongo_free_data.json
+          git commit -m "Auto-Update: Fetched latest Bongo data" || echo "No changes to commit"
+          git push
